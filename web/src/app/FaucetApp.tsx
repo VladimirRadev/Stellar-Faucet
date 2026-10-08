@@ -182,7 +182,7 @@ function ClaimPanel({ drip, cooldown }: { drip: bigint | undefined; cooldown: bi
         errorMessages={FAUCET_ERRORS}
         className="h-13 w-full text-base"
       >
-        {remaining > 0 ? `Next claim in ${formatCountdown(remaining)}` : `Claim ${drip !== undefined ? formatToken(drip) : ''} VLAD`}
+        {remaining > 0 ? `Next claim in ${formatCountdown(remaining)}` : drip !== undefined ? `Claim ${formatToken(drip)} VLAD` : 'Claim VLAD'}
       </TxButton>
     </div>
   )
