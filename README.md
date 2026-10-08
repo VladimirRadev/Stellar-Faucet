@@ -45,12 +45,14 @@ gate, transaction button with custom-error decoding, design tokens); `web/src/ap
 
 ## Deployed addresses (Sepolia, chain id 11155111)
 
-| Contract | Address |
-|---|---|
-| VladToken ($VLAD) | not deployed yet |
-| StellarFaucet | not deployed yet |
+| Contract | Address | Deploy tx |
+|---|---|---|
+| VladToken ($VLAD) | [`0x49ba857d553ef219B144b200F41acaf8CB6768E9`](https://eth-sepolia.blockscout.com/address/0x49ba857d553ef219B144b200F41acaf8CB6768E9) | [`0x3b24505f…f9f5d3`](https://eth-sepolia.blockscout.com/tx/0x3b24505f6310f9ee43a43465e923814519b6e66197674b612910591aa0f9f5d3) |
+| StellarFaucet | [`0x20f7b01E1c017B629a9448A05F8B7D726917C3AB`](https://eth-sepolia.blockscout.com/address/0x20f7b01E1c017B629a9448A05F8B7D726917C3AB) | [`0x4ba3dc49…fff789`](https://eth-sepolia.blockscout.com/tx/0x4ba3dc4998558a51d52c665d92c09bf4380eb27f05c749f78195f979c1fff789) |
 
-Deployment details (transaction hashes, blocks, verification) go to `deployments/sepolia.json` after deployment.
+`MINTER_ROLE` was granted to the faucet in tx [`0xabd349a3…c955f`](https://eth-sepolia.blockscout.com/tx/0xabd349a32b1e444f06f9084135bf04d741ae0ff1d7222cf82fd3a843f43c955f).
+Both contracts are verified on Sourcify and Blockscout. Full details (blocks, gas, verification) are in
+[`deployments/sepolia.json`](deployments/sepolia.json).
 
 ## Run locally
 
@@ -83,8 +85,18 @@ The key is read from the `PRIVATE_KEY` environment variable; no key is ever stor
 set -a; source /path/to/deployer.env; set +a
 forge script script/Deploy.s.sol \
   --rpc-url https://ethereum-sepolia-rpc.publicnode.com \
-  --broadcast --slow -vvv
+  --broadcast --slow --skip-simulation -vvv
 ```
+
+Always deploy with `--skip-simulation`. Sepolia's current fork prices contract creation far above what
+forge's local simulation charges: forge simulates with the Cancun gas rules from `foundry.toml`, which
+estimated 798,410 gas for the `VladToken` creation, while Sepolia actually charged 5,153,554 gas. Without
+the flag, forge sets each gas limit to the local estimate × 1.3, so the first deployment attempt ran out of
+gas and failed (tx `0xe750aa1c…76ec89`). With `--skip-simulation` (together with `--slow`), forge asks the
+Sepolia node for a gas estimate right before it sends each transaction. If the deployer account has an
+EIP-7702 delegation, the node accepts only one unconfirmed transaction at a time; if a send is rejected
+with "in-flight transaction limit reached", wait for the previous transaction to confirm and rerun the same
+command with `--resume`, which sends only the transactions that are still missing.
 
 Verify without an Etherscan key, through Sourcify or Blockscout:
 

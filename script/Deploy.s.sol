@@ -8,6 +8,7 @@ import {IVladToken} from "../src/interfaces/IVladToken.sol";
 
 /// @notice Deploys VladToken + StellarFaucet and grants the faucet MINTER_ROLE (exactly 3 transactions).
 /// @dev Reads the deployer key from the PRIVATE_KEY environment variable. Never hard-code keys.
+///      Run with --slow --skip-simulation: the local Cancun simulation underestimates Sepolia creation gas.
 contract Deploy is Script {
     uint256 internal constant INITIAL_SUPPLY = 1_000_000e18;
     uint256 internal constant DRIP_AMOUNT = 100e18;
