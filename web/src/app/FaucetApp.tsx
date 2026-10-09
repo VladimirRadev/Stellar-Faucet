@@ -36,6 +36,7 @@ const TOKEN_FLOW: Partial<Record<SiteKey, string>> = {
   bank: 'Deposit VLAD into the bank and watch it earn interest on-chain.',
   store: 'Spend VLAD on items in an on-chain store.',
   arena: 'Bring VLAD into the arena and play on-chain games with it.',
+  stellargon: 'Predict real-world events with VLAD.',
 }
 
 export function FaucetApp() {
@@ -256,12 +257,15 @@ function WhatsNext() {
         </div>
         <p className="max-w-md text-sm text-muted">Every Stellar app uses the same $VLAD token on Sepolia.</p>
       </div>
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      {/* Five cards: one column on phones, 2 + 3 on a 6-column grid up to xl, one row of five from xl. */}
+      <div className="mt-6 grid gap-3 sm:grid-cols-6 sm:gap-4 xl:grid-cols-5">
         {next.map((site, i) => (
           <a
             key={site.key}
             href={site.url}
-            className="card group flex flex-col p-5 transition hover:-translate-y-0.5 hover:border-accent-2/40"
+            className={`card group flex flex-col p-5 transition hover:-translate-y-0.5 hover:border-accent-2/40 xl:col-span-1 ${
+              i < 2 ? 'sm:col-span-3' : 'sm:col-span-2'
+            }`}
           >
             <span className="font-mono text-xs text-accent-2">0{i + 1}</span>
             <span className="mt-3 font-display text-lg font-semibold">{site.name}</span>
