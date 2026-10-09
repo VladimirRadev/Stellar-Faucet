@@ -79,8 +79,8 @@ export function FaucetApp() {
           <p className="mt-5 max-w-xl text-[0.95rem] leading-relaxed text-muted">
             Claim {drip !== undefined ? formatToken(drip) : '100'} VLAD every{' '}
             {cooldown !== undefined ? formatDuration(cooldown) : '6h'} for free, then use it across the suite: swap and
-            stake it, deposit it in the bank, spend it in the store and play with it in the arena. Everything runs on the
-            Ethereum Sepolia testnet.
+            stake it, deposit it in the bank, spend it in the store, play with it in the arena and bet it on real-world
+            events in Stellargon. Everything runs on the Ethereum Sepolia testnet.
           </p>
 
           <TokenAddress />
