@@ -119,6 +119,18 @@ Then put the addresses in `web/src/config/addresses.ts` and push: GitHub Actions
 - The admin and the owner are a single externally owned account (EOA). A production setup would use a multisig and a timelock instead.
 - The frontend has no backend and no API keys. It only talks to public RPC endpoints and the user's wallet.
 
+## Smoke tests (2026-10-09)
+
+End-to-end run on Ethereum Sepolia on 2026-10-09 from the deployer `0xEb0243ea72CB24eFb7128Ee7aca314C080b600c4` (an EIP-7702 delegated EOA), with `smoke.sh` (19 steps across the whole suite, one transaction at a time, each waiting for its receipt). After every transaction the script compared balances, reserves and events at the transaction's block with the block before it; "ok" means every such assertion passed. Step numbers are the suite-wide order. Rows for this repo:
+
+| Step | Function | Result | Tx (Blockscout) | Gas used |
+|---|---|---|---|---|
+| 1 | `faucet.claim()` | ok | [`0x57d9c446…4fca37`](https://eth-sepolia.blockscout.com/tx/0x57d9c446277913ca11ed71394fffe2e1a11d78551358830fd2f8828fbe4fca37) | 164472 |
+| 19 | `faucet.claim() eth_call` | reverted CooldownActive (expected) | no tx | — |
+
+- Step 1 faucet: +100 VLAD (balance 997000 -> 997100); next claim allowed at 2026-10-09 14:03:12 UTC
+- Step 19 cooldown: eth_call faucet.claim() reverts CooldownActive(1791554592) = next claim at 2026-10-09 14:03:12 UTC; no tx sent
+
 ## Part of the Stellar suite
 
 | App | Live site | Repository |
