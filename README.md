@@ -2,7 +2,7 @@
 
 Stellar Faucet is the entry point of **Stellar**, a personal Web3 portfolio suite on Ethereum Sepolia.
 It ships the **Vladimir ($VLAD)** ERC-20 token, a rate-limited faucet that mints 100 VLAD per address
-every 6 hours, and a React + wagmi dApp to claim it. The other four Stellar apps all run on this same
+every 6 hours, and a React + wagmi dApp to claim it. The other five Stellar apps all run on this same
 token, and they reuse the frontend scaffold in [`web/`](web/) (see [`web/SCAFFOLD.md`](web/SCAFFOLD.md)).
 
 **Live app:** https://vladimirradev.github.io/Stellar-Faucet/
@@ -133,13 +133,14 @@ End-to-end run on Ethereum Sepolia on 2026-10-09 from the deployer `0xEb0243ea72
 
 ## Part of the Stellar suite
 
-| App | Live site | Repository |
+| App | Repository | Live site |
 |---|---|---|
-| Faucet ($VLAD token) | https://vladimirradev.github.io/Stellar-Faucet/ | https://github.com/VladimirRadev/Stellar-Faucet |
-| Swap & LP Staking | https://vladimirradev.github.io/Stellar-LP-Staking/ | https://github.com/VladimirRadev/Stellar-LP-Staking |
-| Bank | https://vladimirradev.github.io/Stellar-Bank/ | https://github.com/VladimirRadev/Stellar-Bank |
-| Store | https://vladimirradev.github.io/Stellar-Store/ | https://github.com/VladimirRadev/Stellar-Store |
-| Arena | https://vladimirradev.github.io/Stellar-Arena/ | https://github.com/VladimirRadev/Stellar-Arena |
+| Faucet ($VLAD token) | **[Stellar-Faucet](https://github.com/VladimirRadev/Stellar-Faucet)** (this repo) | https://vladimirradev.github.io/Stellar-Faucet/ |
+| Swap & LP Staking | [Stellar-LP-Staking](https://github.com/VladimirRadev/Stellar-LP-Staking) | https://vladimirradev.github.io/Stellar-LP-Staking/ |
+| Bank | [Stellar-Bank](https://github.com/VladimirRadev/Stellar-Bank) | https://vladimirradev.github.io/Stellar-Bank/ |
+| Store | [Stellar-Store](https://github.com/VladimirRadev/Stellar-Store) | https://vladimirradev.github.io/Stellar-Store/ |
+| Arena + Arcade | [Stellar-Arena](https://github.com/VladimirRadev/Stellar-Arena) | https://vladimirradev.github.io/Stellar-Arena/ |
+| Stellargon (prediction market) | [Stellargon](https://github.com/VladimirRadev/Stellargon) | https://vladimirradev.github.io/Stellargon/ |
 
 Stellar is a personal portfolio brand, unrelated to the Stellar (XLM) network.
 
