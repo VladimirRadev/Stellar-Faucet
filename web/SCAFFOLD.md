@@ -1,8 +1,8 @@
 # Stellar web scaffold: copy checklist
 
-`Stellar-Faucet/web/` is the source of truth for the frontend of all five Stellar apps.
-The other four repos (Stellar-LP-Staking, Stellar-Bank, Stellar-Store, Stellar-Arena) copy it
-and change only the items below. The goal: `src/shell/` stays byte-identical in every repo,
+`Stellar-Faucet/web/` is the source of truth for the frontend of all seven Stellar apps.
+The other six repos (Stellar-LP-Staking, Stellar-Bank, Stellar-Store, Stellar-Arena, Stellargon,
+Stellar-CV) copy it and change only the items below. The goal: `src/shell/` stays byte-identical in every repo,
 so a fix made here can be copied over without merging.
 
 Stack: Vite 8, React 19, TypeScript 6, Tailwind CSS 4 (`@tailwindcss/vite`, no tailwind config file),
@@ -31,6 +31,16 @@ Site keys (`SiteKey` in `src/shell/sites.ts`):
 | Stellar-Bank | `'bank'` | `'/Stellar-Bank/'` |
 | Stellar-Store | `'store'` | `'/Stellar-Store/'` |
 | Stellar-Arena | `'arena'` | `'/Stellar-Arena/'` |
+| Stellargon | `'stellargon'` | `'/Stellargon/'` |
+| Stellar-CV | `'cv'` | `'/Stellar-CV/'` |
+
+The order of `SITES` is the order of the tabs in the top navigation. `cv` is the last entry,
+so the "CV" tab sits at the far right.
+
+Web-only repos (Stellar-CV): there is no Foundry project, so skip step 7 (`forge build` and
+`npm run sync-abi`) and the contract list of step 5. Delete the `sync-abi` script from `package.json`, do not create `src/abi/`, and keep only
+`vladToken` in `src/config/addresses.ts` (the shell still needs it for the VLAD balance chip),
+with `footerContracts` = `[vladToken]`.
 
 ## 2. Steps (example: Stellar-Bank)
 
