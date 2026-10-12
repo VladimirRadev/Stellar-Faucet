@@ -9,6 +9,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     rolldownOptions: {
+      // Two pages: the faucet (index.html) and the CV (cv/index.html, served at /Stellar-Faucet/cv/).
+      input: { main: 'index.html', cv: 'cv/index.html' },
       output: {
         // Long-lived vendor chunks: React and the web3 stack change less often than app code.
         codeSplitting: {
