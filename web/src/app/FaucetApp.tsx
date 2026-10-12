@@ -181,6 +181,11 @@ function ClaimPanel({ drip, cooldown }: { drip: bigint | undefined; cooldown: bi
         request={{ address: addresses.faucet, abi: stellarFaucetAbi, functionName: 'claim' }}
         disabled={!canClaim || paused}
         errorMessages={FAUCET_ERRORS}
+        successMessage={
+          drip !== undefined && cooldown !== undefined
+            ? `Claimed ${formatToken(drip)} VLAD. Next claim in ${formatDuration(cooldown)}.`
+            : 'Claimed your VLAD.'
+        }
         className="h-13 w-full text-base"
       >
         {remaining > 0 ? `Next claim in ${formatCountdown(remaining)}` : drip !== undefined ? `Claim ${formatToken(drip)} VLAD` : 'Claim VLAD'}

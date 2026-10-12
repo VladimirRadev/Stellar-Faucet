@@ -84,7 +84,9 @@ Run from the root of the target repo, with Stellar-Faucet checked out next to it
 | `shell/wagmi.ts` | `wagmiConfig`, `sepolia` (Sepolia with our RPCs + Blockscout), `RPC_PRIMARY`, `RPC_FALLBACK`, `EXPLORER_URL` |
 | `shell/Shell.tsx` | `Shell({ children, site? })`: top nav, VLAD balance chip, Sepolia badge, wallet button, 0-VLAD faucet hint, footer |
 | `shell/NetworkGate.tsx` | `NetworkGate({ children, connectMessage? })`: renders children only when connected on Sepolia, otherwise a connect or "Switch to Sepolia" call-to-action |
-| `shell/TxButton.tsx` | `TxButton({ request, children, disabled?, className?, errorMessages?, onConfirmed? })`, `type TxRequest = { address, abi, functionName, args?, value? }`. Simulates first (decodes custom errors before the wallet opens), sends, waits for the receipt, links Blockscout, then calls `queryClient.invalidateQueries()` |
+| `shell/TxButton.tsx` | `TxButton({ request, children, disabled?, className?, errorMessages?, onConfirmed?, successMessage? })`, `type TxRequest = { address, abi, functionName, args?, value? }`. Simulates first (decodes custom errors before the wallet opens), sends, waits for the receipt, calls `onConfirmed(hash)` and toasts "Transaction confirmed" (body = `successMessage`, a node or `(hash) => node`) or "Transaction reverted". Then it polls the head block every 1.5 s until it reaches the receipt's block (max 20 s), runs `queryClient.invalidateQueries()`, and again 3 s and 8 s later, so lagging RPC nodes cannot leave stale balances. Wallet rejections and simulation errors stay inline |
+| `shell/Toast.tsx` | `toast({ kind: 'success' \| 'error' \| 'info', title, body?, href?, hrefLabel?, detail?, durationMs? })` returns an id, `dismissToast(id)`, `ToastHost` (mounted once by `Shell`; max 3 toasts, auto-dismiss after 12 s, paused on hover/focus) |
+| `shell/ApproveThen.tsx` | `ApproveThen({ spender, spenderName, amount, children, token?, tokenSymbol?, tokenAbi?, stepLabels?, disabled? })`: the shared approve-then-act flow. Reads the allowance, shows a 2-step track, renders an "Approve N VLAD" TxButton until the allowance covers `amount`, then `children` (step 2) |
 | `shell/errors.ts` | `describeError(error, messages?)`, `DEFAULT_ERROR_MESSAGES`, `COMMON_ERRORS_ABI` (OpenZeppelin errors merged into every simulation), `type ErrorMessages` |
 | `shell/format.ts` | `formatToken`, `formatCompact`, `truncateAddress`, `formatDuration`, `formatCountdown`, `formatTimestamp`, `explorerAddressUrl`, `explorerTxUrl`, `isConfiguredAddress` |
 | `shell/StatTile.tsx` | `StatTile({ label, value, unit?, hint?, loading?, highlight? })` |
@@ -92,9 +94,21 @@ Run from the root of the target repo, with Stellar-Faucet checked out next to it
 | `shell/CopyButton.tsx` | `CopyButton({ value, label? })` |
 | `shell/WalletButton.tsx` | `WalletButton`, `ConnectButton({ className?, compact? })` |
 | `shell/useConnectWallet.ts`, `shell/useVladBalance.ts`, `shell/useNow.ts` | hooks: connect via the injected connector, the wallet's VLAD balance, current unix time ticking every second |
-| `shell/icons.tsx` | `StarGlyph`, `CopyIcon`, `CheckIcon`, `ExternalIcon`, `ArrowIcon`, `GithubIcon`, `Spinner`, ... |
+| `shell/icons.tsx` | `StarGlyph`, `CopyIcon`, `CheckIcon`, `AlertIcon`, `InfoIcon`, `ExternalIcon`, `ArrowIcon`, `CloseIcon`, `GithubIcon`, `Spinner`, ... |
 | `shell/sites.ts` | `SITES`, `CURRENT_SITE`, `currentSite`, `getSite(key)`, `GITHUB_PROFILE` |
-| `shell/theme.css` | Design tokens as Tailwind `@theme` variables (`bg-bg`, `bg-surface`, `bg-surface-2`, `border-border`, `text-accent`, `text-accent-2`, `text-lime`, `text-text`, `text-muted`, `text-danger`, `font-display`, `font-mono`) and component classes `.card`, `.btn` + `.btn-primary` / `.btn-ghost`, `.chip`, `.eyebrow`, `.link`, `.skeleton` |
+| `shell/theme.css` | Design tokens as Tailwind `@theme` variables (`bg-bg`, `bg-surface`, `bg-surface-2`, `border-border`, `text-accent`, `text-accent-2`, `text-lime`, `text-text`, `text-muted`, `text-danger`, `font-display`, `font-mono`) and component classes `.card`, `.btn` + `.btn-primary` / `.btn-ghost`, `.chip`, `.eyebrow`, `.link`, `.skeleton`, animation `animate-toast-in` |
+
+Every `TxButton` that moves funds must pass a `successMessage` with concrete amounts
+("Bought 3 × Plasma Blade for 150 VLAD.", not "Success"). Approve-then-act flows use `ApproveThen`:
+
+```tsx
+<ApproveThen spender={addresses.store} spenderName="the Store" amount={total}>
+  <TxButton request={{ address: addresses.store, abi: stellarStoreAbi, functionName: 'buy', args: [id, qty] }}
+    successMessage={`Bought ${qty} × ${name} for ${formatToken(total)} VLAD.`} className="w-full">
+    Buy {qty} × {name}
+  </TxButton>
+</ApproveThen>
+```
 
 ## 4. wagmi 3 notes (differences from wagmi 2)
 
@@ -109,4 +123,5 @@ Run from the root of the target repo, with Stellar-Faucet checked out next to it
 - Wallet: the `injected()` connector only (MetaMask). No WalletConnect, no backend, no router.
 - RPC: only `https://ethereum-sepolia-rpc.publicnode.com` (primary) and `https://sepolia.gateway.tenderly.co` (fallback). No API keys anywhere.
 - Explorer links: Blockscout (`https://eth-sepolia.blockscout.com`).
+- Transactions: every `TxButton` that moves funds passes a `successMessage` with concrete amounts. Approvals go through `ApproveThen`, never a hand-made approve button.
 - Branding: "Stellar — personal Web3 suite on Ethereum Sepolia". It is a personal portfolio brand, unrelated to the Stellar (XLM) network.
