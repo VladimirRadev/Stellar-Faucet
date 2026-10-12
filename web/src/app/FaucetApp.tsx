@@ -245,7 +245,8 @@ function TokenAddress() {
 }
 
 function WhatsNext() {
-  const next = SITES.filter((s) => s.key !== 'faucet')
+  // The CV site uses no VLAD, so it is not one of the token's destinations.
+  const next = SITES.filter((s) => s.key !== 'faucet' && s.key !== 'cv')
   return (
     <section aria-labelledby="whats-next">
       <div className="flex flex-wrap items-end justify-between gap-2">
