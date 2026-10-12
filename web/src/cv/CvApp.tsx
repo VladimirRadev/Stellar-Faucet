@@ -1,13 +1,11 @@
 import { type MouseEvent, type ReactNode, useEffect, useState, useSyncExternalStore } from 'react'
 import { ExternalIcon, GithubIcon, StarGlyph } from '../shell/icons'
 import { getSite } from '../shell/sites'
-import { StatTile } from '../shell/StatTile'
 import {
   type ContactKind,
   certifications,
   education,
   experience,
-  highlights,
   languages,
   pdf,
   pdfUrl,
@@ -125,7 +123,7 @@ export function CvApp() {
 
 function Hero() {
   return (
-    <section className="grid items-start gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
+    <section className="min-w-0">
       <div className="min-w-0 pt-2">
         <p className="eyebrow inline-flex items-center gap-2">
           <StarGlyph size={12} /> Stellar suite · Curriculum vitae
@@ -178,15 +176,6 @@ function Hero() {
             )
           })}
         </ul>
-      </div>
-
-      <div className="min-w-0">
-        <p className="eyebrow">At a glance</p>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-2">
-          {highlights.map((h, i) => (
-            <StatTile key={h.label} label={h.label} value={h.value} hint={h.hint} highlight={i === 0} />
-          ))}
-        </div>
       </div>
     </section>
   )

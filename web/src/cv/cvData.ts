@@ -39,14 +39,6 @@ export const profile: {
   ],
 }
 
-/** Headline numbers, each one stated in the CV text. */
-export const highlights = [
-  { value: '10', label: 'Solidity contracts', hint: 'verified on Sepolia' },
-  { value: '6', label: 'React dApps', hint: 'shipped via GitHub Actions' },
-  { value: '25+', label: 'On-chain txs', hint: 'integration tests on Sepolia' },
-  { value: '10+', label: 'ERP clients', hint: 'Odoo 18 / 19 implementations' },
-] as const
-
 export const summary =
   'Blockchain Developer building EVM smart contracts and full-stack Web3 dApps: Solidity with Foundry, Hardhat and OpenZeppelin (ERC-20, ERC-721, ERC-1155), DeFi protocols (AMM, staking, lending), smart contract security and testing, and blockchain integration with TypeScript, React, Next.js, Node.js, wagmi and viem. Almost 2 years as a Web Developer & ERP / Odoo Integrator (Python / Django, REST APIs) for 10+ clients. Open to work since Aug 2026.'
 
