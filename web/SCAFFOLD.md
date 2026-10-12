@@ -1,8 +1,8 @@
 # Stellar web scaffold: copy checklist
 
-`Stellar-Faucet/web/` is the source of truth for the frontend of all seven Stellar apps.
-The other six repos (Stellar-LP-Staking, Stellar-Bank, Stellar-Store, Stellar-Arena, Stellargon,
-Stellar-CV) copy it and change only the items below. The goal: `src/shell/` stays byte-identical in every repo,
+`Stellar-Faucet/web/` is the source of truth for the frontend of all six Stellar apps.
+The other five repos (Stellar-LP-Staking, Stellar-Bank, Stellar-Store, Stellar-Arena, Stellargon)
+copy it and change only the items below. The goal: `src/shell/` stays byte-identical in every repo,
 so a fix made here can be copied over without merging.
 
 Stack: Vite 8, React 19, TypeScript 6, Tailwind CSS 4 (`@tailwindcss/vite`, no tailwind config file),
@@ -15,7 +15,7 @@ wagmi 3, viem 2, TanStack Query 5. Node 22.12 or newer.
 | `src/shell/**` | Copy unchanged. Only exception: the `CURRENT_SITE` line in `src/shell/sites.ts`. |
 | `src/main.tsx`, `src/App.tsx` | Copy unchanged. |
 | `scripts/sync-abi.mjs`, `public/favicon.svg`, `tsconfig*.json`, `.oxlintrc.json`, `.gitignore` | Copy unchanged. |
-| `vite.config.ts` | Change `base` only. |
+| `vite.config.ts` | Change `base`, and delete the `input` line (it adds the Faucet's CV page). |
 | `index.html` | Change `<title>` and the `description` meta only. |
 | `package.json` | Change `name` and the contract names in the `sync-abi` script. |
 | `src/config/addresses.ts` | Rewrite for the repo (keep the same export names). |
@@ -32,15 +32,19 @@ Site keys (`SiteKey` in `src/shell/sites.ts`):
 | Stellar-Store | `'store'` | `'/Stellar-Store/'` |
 | Stellar-Arena | `'arena'` | `'/Stellar-Arena/'` |
 | Stellargon | `'stellargon'` | `'/Stellargon/'` |
-| Stellar-CV | `'cv'` | `'/Stellar-CV/'` |
 
 The order of `SITES` is the order of the tabs in the top navigation. `cv` is the last entry,
 so the "CV" tab sits at the far right.
 
-Web-only repos (Stellar-CV): there is no Foundry project, so skip step 7 (`forge build` and
-`npm run sync-abi`) and the contract list of step 5. Delete the `sync-abi` script from `package.json`, do not create `src/abi/`, and keep only
-`vladToken` in `src/config/addresses.ts` (the shell still needs it for the VLAD balance chip),
-with `footerContracts` = `[vladToken]`.
+### The CV page (Stellar-Faucet only)
+
+Only Stellar-Faucet builds a second page: the CV, served at `/Stellar-Faucet/cv/`. Its files are
+`web/cv/index.html` (second Vite entry, listed in `build.rolldownOptions.input`), `web/src/cv.tsx`
+(entry script), `web/src/cv/` (page code and text) and `web/public/cv/` (the PDF). `cv.tsx` renders
+`<Shell site="cv">`: the optional `site` prop (default `CURRENT_SITE`) makes the nav mark the CV tab
+active and points the faucet hint and the footer's source link at the `cv` entry. The other repos
+copy `shell/` unchanged and do not copy these files; their `cv` entry in `SITES` already points at
+the Faucet-hosted page.
 
 ## 2. Steps (example: Stellar-Bank)
 
@@ -49,9 +53,10 @@ Run from the root of the target repo, with Stellar-Faucet checked out next to it
 1. Copy the scaffold without dependencies, build output, ABIs and the faucet page:
    ```sh
    rsync -a --exclude node_modules --exclude dist --exclude src/abi --exclude src/app \
+     --exclude /cv --exclude /src/cv --exclude /src/cv.tsx --exclude /public/cv \
      ../Stellar-Faucet/web/ ./web/
    ```
-2. `web/vite.config.ts`: set `base: '/Stellar-Bank/'`.
+2. `web/vite.config.ts`: set `base: '/Stellar-Bank/'` and delete the `input` line.
 3. `web/src/shell/sites.ts`: set `export const CURRENT_SITE: SiteKey = 'bank'`. Change nothing else in `shell/`.
 4. `web/index.html`: set the `<title>` (for example `Stellar Bank · $VLAD on Sepolia`) and the description.
 5. `web/package.json`: set `"name": "stellar-bank-web"` and the contract list in
@@ -77,7 +82,7 @@ Run from the root of the target repo, with Stellar-Faucet checked out next to it
 | Module | Exports |
 |---|---|
 | `shell/wagmi.ts` | `wagmiConfig`, `sepolia` (Sepolia with our RPCs + Blockscout), `RPC_PRIMARY`, `RPC_FALLBACK`, `EXPLORER_URL` |
-| `shell/Shell.tsx` | `Shell`: top nav, VLAD balance chip, Sepolia badge, wallet button, 0-VLAD faucet hint, footer |
+| `shell/Shell.tsx` | `Shell({ children, site? })`: top nav, VLAD balance chip, Sepolia badge, wallet button, 0-VLAD faucet hint, footer |
 | `shell/NetworkGate.tsx` | `NetworkGate({ children, connectMessage? })`: renders children only when connected on Sepolia, otherwise a connect or "Switch to Sepolia" call-to-action |
 | `shell/TxButton.tsx` | `TxButton({ request, children, disabled?, className?, errorMessages?, onConfirmed? })`, `type TxRequest = { address, abi, functionName, args?, value? }`. Simulates first (decodes custom errors before the wallet opens), sends, waits for the receipt, links Blockscout, then calls `queryClient.invalidateQueries()` |
 | `shell/errors.ts` | `describeError(error, messages?)`, `DEFAULT_ERROR_MESSAGES`, `COMMON_ERRORS_ABI` (OpenZeppelin errors merged into every simulation), `type ErrorMessages` |

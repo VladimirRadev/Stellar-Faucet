@@ -74,6 +74,13 @@ npm run build           # type-check + production build into web/dist
 npm run sync-abi        # refresh src/abi/*.ts from ../out after `forge build`
 ```
 
+## CV page
+
+The web build has a second Vite entry, [`web/cv/index.html`](web/cv/index.html) (entry script `web/src/cv.tsx`),
+served at https://vladimirradev.github.io/Stellar-Faucet/cv/ and shown as the "CV" tab in every Stellar app.
+To update the CV: replace the PDF in [`web/public/cv/`](web/public/cv/), edit the text in
+[`web/src/cv/cvData.ts`](web/src/cv/cvData.ts) so the page matches the PDF, then push to `main`.
+
 ## Deploy
 
 The deploy script sends exactly three transactions: deploy `VladToken(1_000_000e18)`, deploy
@@ -141,7 +148,7 @@ End-to-end run on Ethereum Sepolia on 2026-10-09 from the deployer `0xEb0243ea72
 | Store | [Stellar-Store](https://github.com/VladimirRadev/Stellar-Store) | https://vladimirradev.github.io/Stellar-Store/ |
 | Arena + Arcade | [Stellar-Arena](https://github.com/VladimirRadev/Stellar-Arena) | https://vladimirradev.github.io/Stellar-Arena/ |
 | Stellargon (prediction market) | [Stellargon](https://github.com/VladimirRadev/Stellargon) | https://vladimirradev.github.io/Stellargon/ |
-| CV (Vladimir Radev) | [Stellar-CV](https://github.com/VladimirRadev/Stellar-CV) | https://vladimirradev.github.io/Stellar-CV/ |
+| CV (Vladimir Radev) | this repo, [web/src/cv/](https://github.com/VladimirRadev/Stellar-Faucet/tree/main/web/src/cv) | https://vladimirradev.github.io/Stellar-Faucet/cv/ |
 
 Stellar is a personal portfolio brand, unrelated to the Stellar (XLM) network.
 
